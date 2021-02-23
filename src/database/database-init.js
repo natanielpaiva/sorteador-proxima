@@ -20,7 +20,8 @@ export default class DatabaseInit {
             ordem int,
             time text,
             status text    
-            );`
+            );
+            `
         ];
 
         db.transaction(

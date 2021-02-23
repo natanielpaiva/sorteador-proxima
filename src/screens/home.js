@@ -1,79 +1,84 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native';
 import DatabaseInit from '../database/database-init';
 import JogadoresService from '../services/JogadoresService';
+import { Label, Button, Text, Form, Item, Input } from 'native-base';
 
 
-export default function HomeScreen() {
-  const [value, onChangeText] = React.useState('');
-  const [qtdPorTime, onChangeQtd] = React.useState(4);
+export default function HomeScreen({ navigation }) {
+    const [value, onChangeText] = React.useState('');
+    const [qtdPorTime, onChangeQtd] = React.useState(4);
 
-  React.useEffect(() => {
-    // Atualiza o titulo do documento usando a API do browser
-    new DatabaseInit()
-  });
+    //   React.useEffect(() => {
+    //     new DatabaseInit()
+    //   });
 
-  const sortear = () => {
-    new DatabaseInit()
+    const sortear = () => {
+        new DatabaseInit()
 
-    onChangeText(value.replace(/[0-9]/g, ''))
-    let listaCompleta = value.split(/\n/)
-    embaralharLista(listaCompleta)
-    console.log(listaCompleta, 'lista alterada')
-    JogadoresService.addAllPlayers(listaCompleta)
-  }
+        let listaSemNumeros = value.replace(/[0-9]/g, '')
+        let listaCompleta = listaSemNumeros.split(/\n/)
+        listaCompleta = embaralharLista(listaCompleta)
 
-  const verJogadores = () => {
-    JogadoresService.findAll().then(data => {
-      console.log(data)
-    })
-  }
+        setTimeout(() => {
+            JogadoresService.addAllPlayers(listaCompleta, qtdPorTime)
+            setTimeout(() => {
+                navigation.navigate('Listar')
+            }, 1000);
+        }, 1000);
 
-  const embaralharLista = (listaCompleta) => {
-    listaCompleta.sort(function (a, b) { return 0.5 - Math.random() })
-  }
 
-  return (
-    <View style={styles.container}>
-      <Text>Coloque um nome por linha:</Text>
-      <TextInput
-        multiline
-        style={{ height: 300, width: 300, borderColor: 'gray', borderWidth: 1 }}
-        onChangeText={text => onChangeText(text)}
-        value={value}
-      />
-      <Text>Coloque a quantidade por time:</Text>
-      <TextInput
-        keyboardType={'numeric'}
-        dataDetectorTypes={'phoneNumber'}
-        style={{ height: 40, width: 40, borderColor: 'gray', borderWidth: 1 }}
-        onChangeText={text => onChangeQtd(text)}
-        value={qtdPorTime.toString()}
-      />
-      <TouchableOpacity
-        onPress={sortear}
-        style={{
-          backgroundColor: 'blue', width: 200, height: 60, alignItems: 'center', borderRadius: 10
-        }}>
-        <Text style={{ fontSize: 20, alignItems: 'center', color: '#fff' }}>Sortear</Text>
-      </TouchableOpacity>
-       <TouchableOpacity
-        onPress={verJogadores}
-        style={{
-          backgroundColor: 'blue', width: 200, height: 60, alignItems: 'center', borderRadius: 10
-        }}>
-        <Text style={{ fontSize: 20, alignItems: 'center', color: '#fff' }}>Ver Jogadores</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    }
+
+    const verJogadores = () => {
+        JogadoresService.findAll().then(data => {
+            console.log(data)
+        })
+    }
+
+    const embaralharLista = (listaCompleta) => {
+        return listaCompleta.sort(function (a, b) { return 0.5 - Math.random() })
+    }
+
+    return (
+        <View style={styles.container}>
+            <Form>
+                <Item floatingLabel>
+                    <Label>Coloque os nomes por linha</Label>
+                    <Input
+                        multiline
+                        style={{ height: 300}}
+                        onChangeText={text => onChangeText(text)}
+                        value={value}
+                    />
+                </Item>
+                <Item floatingLabel>
+                    <Label>Coloque a quantidade por time</Label>
+                    <Input
+                        keyboardType={'numeric'}
+                        onChangeText={text => onChangeQtd(text)}
+                        value={qtdPorTime.toString()}
+                    />
+                </Item>
+            </Form>
+            <Button
+                full info
+                onPress={sortear}
+                style={{
+                    marginTop: 20,
+                }}
+            ><Text> Sortear </Text>
+            </Button>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        // alignItems: 'center',
+        // justifyContent: 'center',
+    },
 });
