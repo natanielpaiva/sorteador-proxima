@@ -8,7 +8,7 @@ import JogadoresService from '../services/JogadoresService';
 
 
 
-export default function ListarJogadores() {
+export default function ListarJogadores({navigation}) {
     const [lista, onChangeLista] = React.useState([]);
 
     React.useEffect(() => {
@@ -27,11 +27,11 @@ export default function ListarJogadores() {
     return (
         <View style={styles.container}>
             <ScrollView>
-                <Times lista={lista} nomeTime='Time 1' status='Jogando' />
-                <Times lista={lista} nomeTime='Time 2' status='Jogando' />
-                <Proximos lista={lista} />
+                <Times navigation={navigation} lista={lista} nomeTime='Time 1' status='Jogando' />
+                <Times navigation={navigation} lista={lista} nomeTime='Time 2' status='Jogando' />
+                <Proximos navigation={navigation} lista={lista} />
             </ScrollView>
-            <MenuFooter />
+            <MenuFooter navigation={navigation} />
         </View>
     );
 }

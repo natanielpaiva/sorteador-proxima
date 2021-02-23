@@ -4,28 +4,32 @@ import { StyleSheet } from 'react-native';
 
 
 
-export default function MenuFooter() {
+export default function MenuFooter(props) {
+
+    const home = () => {
+        props.navigation.navigate('Home')
+    }
 
 
     return (
         <Footer style={{ backgroundColor: '#62B1F6' }}>
             <FooterTab style={{ backgroundColor: '#62B1F6', color: '#fff' }}>
-                <Button vertical>
-                    <Icon style={styles.fontItens} name="apps" />
-                    <Text style={styles.fontItens}>Apps</Text>
-                </Button>
-                <Button vertical>
-                    <Icon style={styles.fontItens} name="camera" />
-                    <Text style={styles.fontItens}>Camera</Text>
-                </Button>
-                <Button vertical>
-                    <Icon style={styles.fontItens} active name="navigate" />
-                    <Text style={styles.fontItens}>Navigate</Text>
+                <Button onPress={home} vertical>
+                    <Icon style={styles.fontItens} name="home" type='AntDesign' />
+                    <Text style={styles.fontItens}>Início</Text>
                 </Button>
                 {/* <Button vertical>
-                    <Icon style={styles.fontItens} name="person" />
-                    <Text style={styles.fontItens}>Contact</Text>
+                    <Icon style={styles.fontItens} name="share" type='Entypo' />
+                    <Text style={styles.fontItens}>Compartilhar</Text>
                 </Button> */}
+                <Button vertical>
+                    <Icon style={styles.fontItens} name="add-task" type="MaterialIcons" />
+                    <Text style={styles.fontItens}>Fim da partida</Text>
+                </Button>
+                <Button vertical>
+                    <Icon style={styles.fontItens} active name="adduser" type="AntDesign" />
+                    <Text style={styles.fontItens}>Adicionar Jogador</Text>
+                </Button>
             </FooterTab>
         </Footer>
     );
