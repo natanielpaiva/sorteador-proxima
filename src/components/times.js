@@ -24,7 +24,7 @@ export default function Times(props) {
                     return (
                         <SwipeRow
                             key={key}
-                            leftOpenValue={75}
+                            // leftOpenValue={75}
                             rightOpenValue={-75}
                             left={
                                 <Button success onPress={() => alert('Add')}>

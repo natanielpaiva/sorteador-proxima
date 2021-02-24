@@ -19,7 +19,9 @@ export default function Proximos(props) {
                     return (
                         <SwipeRow
                             key={key}
-                            leftOpenValue={75}
+                            // leftOpenValue={75}
+                          
+                            directionalDistanceChangeThreshold={20}
                             rightOpenValue={-75}
                             left={
                                 <Button success onPress={() => alert('Add')}>

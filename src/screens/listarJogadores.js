@@ -83,9 +83,7 @@ export default function ListarJogadores({ navigation }) {
         JogadoresService.deleteAll()
         setTimeout(() => {
             ContadorService.findQtdPorTime().then(data => {
-                setTimeout(() => {
-                    JogadoresService.addAllPlayers(gerarArrayList(), parseInt(data._array[0].qtdPorTime))
-                }, 1000);
+                JogadoresService.addAllPlayers(gerarArrayList(), parseInt(data._array[0].qtdPorTime))
                 setTimeout(() => {
                     initList()
                 }, 1000);
