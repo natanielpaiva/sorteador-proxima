@@ -1,18 +1,13 @@
+import { Button, Form, Input, Item, Label, Text } from 'native-base';
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { TextInput } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import DatabaseInit from '../database/database-init';
 import JogadoresService from '../services/JogadoresService';
-import { Label, Button, Text, Form, Item, Input } from 'native-base';
 
 
 export default function HomeScreen({ navigation }) {
     const [value, onChangeText] = React.useState('');
     const [qtdPorTime, onChangeQtd] = React.useState(4);
-
-    //   React.useEffect(() => {
-    //     new DatabaseInit()
-    //   });
 
     const sortear = () => {
         new DatabaseInit()
@@ -29,12 +24,6 @@ export default function HomeScreen({ navigation }) {
         }, 1000);
 
 
-    }
-
-    const verJogadores = () => {
-        JogadoresService.findAll().then(data => {
-            console.log(data)
-        })
     }
 
     const embaralharLista = (listaCompleta) => {

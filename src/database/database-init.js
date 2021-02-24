@@ -19,7 +19,7 @@ export default class DatabaseInit {
             nome text,
             ordem int,
             time text,
-            status text    
+            numeroTime int    
             );
             `
         ];

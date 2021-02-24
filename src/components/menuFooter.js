@@ -18,15 +18,11 @@ export default function MenuFooter(props) {
                     <Icon style={styles.fontItens} name="home" type='AntDesign' />
                     <Text style={styles.fontItens}>Início</Text>
                 </Button>
-                {/* <Button vertical>
-                    <Icon style={styles.fontItens} name="share" type='Entypo' />
-                    <Text style={styles.fontItens}>Compartilhar</Text>
-                </Button> */}
                 <Button vertical>
                     <Icon style={styles.fontItens} name="add-task" type="MaterialIcons" />
                     <Text style={styles.fontItens}>Fim da partida</Text>
                 </Button>
-                <Button vertical>
+                <Button onPress={props.adicionarJogador} vertical>
                     <Icon style={styles.fontItens} active name="adduser" type="AntDesign" />
                     <Text style={styles.fontItens}>Adicionar Jogador</Text>
                 </Button>

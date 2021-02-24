@@ -10,11 +10,7 @@ export default class JogadoresService {
         let numeroTime = 1
         let controleLaco = 1
         lista.forEach((jogador, i) => {
-            let status = 'Jogando'
-            if(numeroTime > 2)
-                status = 'Próximo'
-
-            JogadoresService.addData(jogador, i, 'Time ' + numeroTime, status)
+            JogadoresService.addData(jogador, controleLaco, 'Time ' + numeroTime, numeroTime)
             if (controleLaco == qtdPorTime) {
                 qtdPorTime = parseInt(qtdPorTime) + parseInt(qtdPorTimeInicial)
                 numeroTime++
@@ -23,12 +19,12 @@ export default class JogadoresService {
         });
     }
 
-    static addData(jogador, ordem, time, status) {
+    static addData(jogador, ordem, time, numeroTime) {
         return new Promise((resolve, reject) => db.transaction(
             tx => {
-                tx.executeSql(`insert into ${table} (nome, ordem, time, status) 
+                tx.executeSql(`insert into ${table} (nome, ordem, time, numeroTime) 
                 values (?, ?, ?, ?)`,
-                    [jogador, ordem, time, status],
+                    [jogador, ordem, time, numeroTime],
                     (_, { insertId, rows }) => {
                         // console.log("id insert: " + insertId);
                         resolve(insertId)
@@ -89,6 +85,43 @@ export default class JogadoresService {
             console.log(txError);
         }))
 
+    }
+
+    static findLastRegister() {
+        return new Promise((resolve, reject) => db.transaction(tx => {
+            tx.executeSql(`select * from ${table} order by ordem desc limit 1`, [], (_, { rows }) => {
+                resolve(rows)
+            }), (sqlError) => {
+                console.log(sqlError);
+            }
+        }, (txError) => {
+            console.log(txError);
+        }))
+
+    }
+
+    static countNumberPorTime() {
+        return new Promise((resolve, reject) => db.transaction(tx => {
+            tx.executeSql(`select count(*) as contador from ${table} where numeroTime = 1`, [], (_, { rows }) => {
+                resolve(rows)
+            }), (sqlError) => {
+                console.log(sqlError);
+            }
+        }, (txError) => {
+            console.log(txError);
+        }))
+    }
+    
+    static countNumberUltimoTime(numeroTime) {
+        return new Promise((resolve, reject) => db.transaction(tx => {
+            tx.executeSql(`select count(*) as contador from ${table} where numeroTime = ${numeroTime}`, [], (_, { rows }) => {
+                resolve(rows)
+            }), (sqlError) => {
+                console.log(sqlError);
+            }
+        }, (txError) => {
+            console.log(txError);
+        }))
     }
 
 }
