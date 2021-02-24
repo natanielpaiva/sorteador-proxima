@@ -1,6 +1,6 @@
 import { Button, Form, Input, Item, Label, Text } from 'native-base';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Alert } from 'react-native';
 import DatabaseInit from '../database/database-init';
 import JogadoresService from '../services/JogadoresService';
 
@@ -22,13 +22,37 @@ export default function HomeScreen({ navigation }) {
                 navigation.navigate('Listar')
             }, 1000);
         }, 1000);
+    }
 
-
+    const lista = () => {
+        navigation.navigate('Listar')
     }
 
     const embaralharLista = (listaCompleta) => {
         return listaCompleta.sort(function (a, b) { return 0.5 - Math.random() })
     }
+
+    const confirmSorteio = () =>
+
+        JogadoresService.findAll().then(data => {
+            if (data._array.length > 4) {
+                Alert.alert(
+                    "Confirmar sorteio!",
+                    "Tem certeza? Se já tiver sorteado os times de hoje, não use essa opção!",
+                    [
+                        {
+                            text: "Não sortear",
+                            onPress: () => console.log("Cancel Pressed"),
+                            style: "cancel"
+                        },
+                        { text: "Quero sortear sim!", onPress: () => sortear() }
+                    ],
+                    { cancelable: false }
+                );
+            } else {
+                sortear()
+            }
+        })
 
     return (
         <View style={styles.container}>
@@ -37,7 +61,7 @@ export default function HomeScreen({ navigation }) {
                     <Label>Coloque os nomes por linha</Label>
                     <Input
                         multiline
-                        style={{ height: 300}}
+                        style={{ height: 300 }}
                         onChangeText={text => onChangeText(text)}
                         value={value}
                     />
@@ -52,12 +76,20 @@ export default function HomeScreen({ navigation }) {
                 </Item>
             </Form>
             <Button
-                full info
-                onPress={sortear}
+                full warning
+                onPress={confirmSorteio}
                 style={{
                     marginTop: 20,
                 }}
             ><Text> Sortear </Text>
+            </Button>
+            <Button
+                full info
+                onPress={lista}
+                style={{
+                    marginTop: 20,
+                }}
+            ><Text> Lista já feita </Text>
             </Button>
         </View>
     );

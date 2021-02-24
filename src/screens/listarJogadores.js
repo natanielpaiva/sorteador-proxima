@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Alert } from 'react-native';
 import CadastrarJogador from '../components/cadastrarJogador';
 import MenuFooter from '../components/menuFooter';
 import Proximos from '../components/proximos';
@@ -16,6 +16,11 @@ export default function ListarJogadores({ navigation }) {
     }, [initList]);
 
     const cadastrar = (nome) => {
+        if(nome === ''){
+            Alert.alert("Preencha o nome!");
+            return
+        }
+            
         JogadoresService.findLastRegister().then(data => {
             countNumberUltimoTime(data._array[0], nome)
         })
