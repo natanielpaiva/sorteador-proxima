@@ -1,6 +1,6 @@
+import { Button, Icon, List, ListItem, SwipeRow, Text } from 'native-base';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { List, ListItem, Text } from 'native-base';
 
 export default function Proximos(props) {
 
@@ -17,19 +17,36 @@ export default function Proximos(props) {
             {props.lista.map((jogador, key) => {
                 if ('Time 1' !== jogador.time && 'Time 2' !== jogador.time) {
                     return (
-                        <List key={key}>
-                            <ListItem>
-                                <Text style={{
-                                    // fontSize: 25,
-                                    fontWeight: 'bold',
-                                    color: '#76787C'
-                                }}>{jogador.time}: </Text>
-                                <Text style={{
-                                    // fontSize: 25,
-                                    color: '#76787C'
-                                }}>{jogador.nome}</Text>
-                            </ListItem>
-                        </List>
+                        <SwipeRow
+                            key={key}
+                            leftOpenValue={75}
+                            rightOpenValue={-75}
+                            left={
+                                <Button success onPress={() => alert('Add')}>
+                                    <Icon active name="add" />
+                                </Button>
+                            }
+                            body={
+
+                                <ListItem style={{ marginStart:20,}}>
+                                    <Text style={{
+                                        // fontSize: 25,
+                                        fontWeight: 'bold',
+                                        color: '#76787C'
+                                    }}>{jogador.time}: </Text>
+                                    <Text style={{
+                                        // fontSize: 25,
+                                        color: '#76787C'
+                                    }}>{jogador.nome}</Text>
+                                </ListItem>
+                            }
+                            right={
+                                <Button danger onPress={()  => props.excluir(jogador)}>
+                                    <Icon active name="trash" />
+                                </Button>
+                            }
+                        >
+                        </SwipeRow>
                     )
                 }
             })}

@@ -48,6 +48,19 @@ export default class JogadoresService {
 
             });
     }
+    
+    static deleteAll() {
+        db.transaction(
+            tx => {
+                tx.executeSql(`delete from ${table}`, [], (_, { rows }) => {
+                }), (sqlError) => {
+                    console.log(sqlError);
+                }
+            }, (txError) => {
+                console.log(txError);
+
+            });
+    }
 
 
     static updateOrdemById(id, ordem) {

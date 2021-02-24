@@ -6,8 +6,8 @@ export default class DatabaseInit {
     constructor() {
         db = DatabaseConnection.getConnection()
         db.exec([{ sql: 'PRAGMA foreign_keys = ON;', args: [] }], false, () =>
-        console.log('Foreign keys turned on')
-    );
+            console.log('Foreign keys turned on')
+        );
         this.InitDb()
     }
     InitDb() {
@@ -21,7 +21,12 @@ export default class DatabaseInit {
             time text,
             numeroTime int    
             );
-            `
+            `,
+            `DROP TABLE IF EXISTS contador;`,
+            `create table if not exists contador (
+                id integer primary key autoincrement,
+                qtdPorTime int
+                );`
         ];
 
         db.transaction(

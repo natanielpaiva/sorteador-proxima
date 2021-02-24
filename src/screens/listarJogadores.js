@@ -4,23 +4,25 @@ import CadastrarJogador from '../components/cadastrarJogador';
 import MenuFooter from '../components/menuFooter';
 import Proximos from '../components/proximos';
 import Times from '../components/times';
+import ContadorService from '../services/ContadorService';
 import JogadoresService from '../services/JogadoresService';
 
 
 export default function ListarJogadores({ navigation }) {
     const [lista, onChangeLista] = React.useState([]);
     const [visible, setVisible] = React.useState(false);
+    let listaCompletaUpdate = []
 
     React.useEffect(() => {
         initList()
     }, [initList]);
 
     const cadastrar = (nome) => {
-        if(nome === ''){
+        if (nome === '') {
             Alert.alert("Preencha o nome!");
             return
         }
-            
+
         JogadoresService.findLastRegister().then(data => {
             countNumberUltimoTime(data._array[0], nome)
         })
@@ -54,6 +56,7 @@ export default function ListarJogadores({ navigation }) {
     const initList = () => {
         JogadoresService.findAll().then(data => {
             onChangeLista(lista => data._array)
+            listaCompletaUpdate = data._array
         })
     }
 
@@ -65,12 +68,61 @@ export default function ListarJogadores({ navigation }) {
         setVisible(true)
     }
 
+    const confirmarExclusao = (jogador) => {
+        JogadoresService.deleteById(jogador.id)
+        setTimeout(() => {
+            initList()
+            setTimeout(() => {
+                deleteAll()
+            }, 1000);
+        }, 1000);
+
+    }
+
+    const deleteAll = () => {
+        JogadoresService.deleteAll()
+        setTimeout(() => {
+            ContadorService.findQtdPorTime().then(data => {
+                setTimeout(() => {
+                    JogadoresService.addAllPlayers(gerarArrayList(), parseInt(data._array[0].qtdPorTime))
+                }, 1000);
+                setTimeout(() => {
+                    initList()
+                }, 1000);
+            })
+        }, 1000);
+    }
+
+    const gerarArrayList = () => {
+        let arrayList = []
+        listaCompletaUpdate.forEach(jogador => {
+            arrayList.push(jogador.nome)
+        });
+        return arrayList
+    }
+
+    const excluir = (jogador) => {
+        Alert.alert(
+            "Confirmar exclusão!",
+            "Tem certeza? Esse cara desistiu da pelada?",
+            [
+                {
+                    text: "Não desistiu",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Desistiu sim!", onPress: () => confirmarExclusao(jogador) }
+            ],
+            { cancelable: false }
+        );
+    }
+
     return (
         <View style={styles.container}>
             <ScrollView>
-                <Times navigation={navigation} lista={lista} nomeTime='Time 1' status='Jogando' />
-                <Times navigation={navigation} lista={lista} nomeTime='Time 2' status='Jogando' />
-                <Proximos navigation={navigation} lista={lista} />
+                <Times excluir={excluir} navigation={navigation} lista={lista} nomeTime='Time 1' status='Jogando' />
+                <Times excluir={excluir} navigation={navigation} lista={lista} nomeTime='Time 2' status='Jogando' />
+                <Proximos excluir={excluir} navigation={navigation} lista={lista} />
             </ScrollView>
             <CadastrarJogador cadastrar={cadastrar} onRequestClose={onRequestClose} visible={visible} />
             <MenuFooter navigation={navigation} adicionarJogador={adicionarJogador} />

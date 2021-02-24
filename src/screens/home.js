@@ -1,7 +1,8 @@
-import { Button, Form, Input, Item, Label, Text } from 'native-base';
+import { Button, Form, Input, Item, Label, Text, Icon } from 'native-base';
 import React from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import DatabaseInit from '../database/database-init';
+import ContadorService from '../services/ContadorService';
 import JogadoresService from '../services/JogadoresService';
 
 
@@ -17,6 +18,7 @@ export default function HomeScreen({ navigation }) {
         listaCompleta = embaralharLista(listaCompleta)
 
         setTimeout(() => {
+            ContadorService.addData(parseInt(qtdPorTime))
             JogadoresService.addAllPlayers(listaCompleta, qtdPorTime)
             setTimeout(() => {
                 navigation.navigate('Listar')
@@ -34,28 +36,36 @@ export default function HomeScreen({ navigation }) {
 
     const confirmSorteio = () =>
 
-        JogadoresService.findAll().then(data => {
-            if (data._array.length > 4) {
-                Alert.alert(
-                    "Confirmar sorteio!",
-                    "Tem certeza? Se já tiver sorteado os times de hoje, não use essa opção!",
-                    [
-                        {
-                            text: "Não sortear",
-                            onPress: () => console.log("Cancel Pressed"),
-                            style: "cancel"
-                        },
-                        { text: "Quero sortear sim!", onPress: () => sortear() }
-                    ],
-                    { cancelable: false }
-                );
-            } else {
-                sortear()
-            }
-        })
+        // JogadoresService.findAll().then(data => {
+        //     console.log(data, 'aaaaa')
+        //     if (data._array.length > 4) {
+
+        //     } else {
+        //         sortear()
+        //     }
+        // }).catch((error) => {
+        //     console.log('error', error)
+        //     sortear()
+        // })
+        Alert.alert(
+            "Confirmar sorteio!",
+            "Tem certeza? Se já tiver sorteado os times de hoje, não use essa opção!",
+            [
+                {
+                    text: "Não sortear",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Quero sortear sim!", onPress: () => sortear() }
+            ],
+            { cancelable: false }
+        );
 
     return (
         <View style={styles.container}>
+            {/* <View style={{ alignItems: 'center' }}>
+                <Icon style={{fontSize:60, color:'gray'}}  name='soccer-field' type='MaterialCommunityIcons' />
+            </View> */}
             <Form>
                 <Item floatingLabel>
                     <Label>Coloque os nomes por linha</Label>
