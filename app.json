@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "sorteador-proxima",
+    "name": "Sorteador e Controle de Próxima",
     "slug": "sorteador-proxima",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -17,9 +17,21 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "sorteadorproxima.com",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Este app utiliza a camera para tirar foto para o perfil de usuário.",
+        "NSPhotoLibraryUsageDescription": "Este app utiliza a galeria de fotos para você poder alterar sua foto de perfil"
+      }
     },
     "android": {
+      "package": "sorteadorproxima.com",
+      "versionCode": 2,
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

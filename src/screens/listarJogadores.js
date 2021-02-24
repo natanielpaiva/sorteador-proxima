@@ -86,7 +86,7 @@ export default function ListarJogadores({ navigation }) {
         setTimeout(() => {
             initList()
             setTimeout(() => {
-                let arrayFinal = gerarArrayList()
+                let arrayFinal = gerarArrayList(listaCompletaUpdate)
                 deleteAll(arrayFinal)
             }, 1000);
         }, 1000);
@@ -107,7 +107,7 @@ export default function ListarJogadores({ navigation }) {
 
     const gerarArrayList = (listaCompletaUpdate) => {
         let arrayList = []
-        for(let i in listaCompletaUpdate){
+        for (let i in listaCompletaUpdate) {
             arrayList.push(listaCompletaUpdate[i].nome)
         };
         return arrayList
@@ -190,7 +190,11 @@ export default function ListarJogadores({ navigation }) {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { text: "Empatou sim!", onPress: () => { } }
+                {
+                    text: "Empatou sim!", onPress: () => {
+                        descerTimes(primeiroTime, segundoTime)
+                    }
+                }
             ],
             { cancelable: false }
         );
@@ -199,17 +203,35 @@ export default function ListarJogadores({ navigation }) {
     const descerTime = (time, numeroTime) => {
         let arrayList = [...lista];
 
-        for(let index in lista){
+        for (let index in lista) {
             if (parseInt(numeroTime) === parseInt(lista[index].numeroTime)) {
-                console.log("excluiiu", lista[index])
-                arrayList.splice(index, 1)
+                delete arrayList[index]
             }
         };
         let arrayFinal = gerarArrayList(arrayList)
-        console.log(arrayList, 'arraylIST')
-        console.log(arrayFinal, 'arrayFinal')
+
         for (let i in time) {
             arrayFinal.push(time[i].nome)
+        };
+        deleteAll(arrayFinal)
+        setVisiblePartida(false)
+    }
+
+    const descerTimes = (time1, time2) => {
+        let arrayList = [...lista];
+
+        for (let index in lista) {
+            if (1 === parseInt(lista[index].numeroTime) || 2 === parseInt(lista[index].numeroTime)) {
+                delete arrayList[index]
+            }
+        };
+        let arrayFinal = gerarArrayList(arrayList)
+
+        for (let i in time1) {
+            arrayFinal.push(time1[i].nome)
+        };
+        for (let i in time2) {
+            arrayFinal.push(time2[i].nome)
         };
         deleteAll(arrayFinal)
         setVisiblePartida(false)
