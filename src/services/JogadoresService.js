@@ -48,7 +48,7 @@ export default class JogadoresService {
 
             });
     }
-    
+
     static deleteAll() {
         db.transaction(
             tx => {
@@ -87,6 +87,20 @@ export default class JogadoresService {
 
         }));
     }
+
+    static findByNumeroTime(numeroTime) {
+        return new Promise((resolve, reject) => db.transaction(tx => {
+            tx.executeSql(`select * from ${table} where numeroTime=? order by ordem`, [numeroTime], (_, { rows }) => {
+                resolve(rows)
+            }), (sqlError) => {
+                console.log(sqlError);
+            }
+        }, (txError) => {
+            console.log(txError);
+
+        }));
+    }
+
     static findAll() {
         return new Promise((resolve, reject) => db.transaction(tx => {
             tx.executeSql(`select * from ${table} order by ordem`, [], (_, { rows }) => {
@@ -124,7 +138,7 @@ export default class JogadoresService {
             console.log(txError);
         }))
     }
-    
+
     static countNumberUltimoTime(numeroTime) {
         return new Promise((resolve, reject) => db.transaction(tx => {
             tx.executeSql(`select count(*) as contador from ${table} where numeroTime = ${numeroTime}`, [], (_, { rows }) => {

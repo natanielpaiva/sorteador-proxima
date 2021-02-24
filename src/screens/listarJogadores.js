@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View, Alert } from 'react-native';
 import CadastrarJogador from '../components/cadastrarJogador';
+import FinalizarPartida from '../components/finalizarPartida';
 import MenuFooter from '../components/menuFooter';
 import Proximos from '../components/proximos';
 import Times from '../components/times';
@@ -10,8 +11,12 @@ import JogadoresService from '../services/JogadoresService';
 
 export default function ListarJogadores({ navigation }) {
     const [lista, onChangeLista] = React.useState([]);
+    const [primeiroTime, setPrimeiroTime] = React.useState([]);
+    const [segundoTime, setSegundoTime] = React.useState([]);
     const [visible, setVisible] = React.useState(false);
-    let listaCompletaUpdate = []
+    const [visiblePartida, setVisiblePartida] = React.useState(false);
+
+    var listaCompletaUpdate = []
 
     React.useEffect(() => {
         initList()
@@ -57,15 +62,23 @@ export default function ListarJogadores({ navigation }) {
         JogadoresService.findAll().then(data => {
             onChangeLista(lista => data._array)
             listaCompletaUpdate = data._array
+            preencherTimes()
         })
     }
 
     const onRequestClose = () => {
         setVisible(false)
     }
+    const onRequestClosePartida = () => {
+        setVisiblePartida(false)
+    }
 
     const adicionarJogador = () => {
         setVisible(true)
+    }
+
+    const finalizarPartida = () => {
+        setVisiblePartida(true)
     }
 
     const confirmarExclusao = (jogador) => {
@@ -73,17 +86,18 @@ export default function ListarJogadores({ navigation }) {
         setTimeout(() => {
             initList()
             setTimeout(() => {
-                deleteAll()
+                let arrayFinal = gerarArrayList()
+                deleteAll(arrayFinal)
             }, 1000);
         }, 1000);
 
     }
 
-    const deleteAll = () => {
+    const deleteAll = (arrayFinal) => {
         JogadoresService.deleteAll()
         setTimeout(() => {
             ContadorService.findQtdPorTime().then(data => {
-                JogadoresService.addAllPlayers(gerarArrayList(), parseInt(data._array[0].qtdPorTime))
+                JogadoresService.addAllPlayers(arrayFinal, parseInt(data._array[0].qtdPorTime))
                 setTimeout(() => {
                     initList()
                 }, 1000);
@@ -91,11 +105,11 @@ export default function ListarJogadores({ navigation }) {
         }, 1000);
     }
 
-    const gerarArrayList = () => {
+    const gerarArrayList = (listaCompletaUpdate) => {
         let arrayList = []
-        listaCompletaUpdate.forEach(jogador => {
-            arrayList.push(jogador.nome)
-        });
+        for(let i in listaCompletaUpdate){
+            arrayList.push(listaCompletaUpdate[i].nome)
+        };
         return arrayList
     }
 
@@ -115,6 +129,92 @@ export default function ListarJogadores({ navigation }) {
         );
     }
 
+    const preencherTimes = () => {
+        JogadoresService.findByNumeroTime(1).then(data => {
+            setPrimeiroTime(data._array)
+        })
+        JogadoresService.findByNumeroTime(2).then(data => {
+            setSegundoTime(data._array)
+        })
+    }
+
+    const convertTimeEmString = (time) => {
+        let nomes = ''
+        time.forEach(jogador => {
+            if (nomes !== '')
+                nomes = nomes + ", " + jogador.nome
+            else
+                nomes = jogador.nome
+        });
+        return nomes
+    }
+
+    const escolherPrimeiroTime = () => {
+        Alert.alert(
+            "Tem certeza que foi o primeiro time?",
+            "Com os jogadores " + convertTimeEmString(primeiroTime),
+            [
+                {
+                    text: "Me enganei, foi não!",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Foram eles sim!", onPress: () => { descerTime(segundoTime, 2) } }
+            ],
+            { cancelable: false }
+        );
+    }
+    const escolherSegundoTime = () => {
+        Alert.alert(
+            "Tem certeza que foi o segundo time?",
+            "Com os jogadores " + convertTimeEmString(segundoTime),
+            [
+                {
+                    text: "Me enganei, foi não!",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Foram eles sim!", onPress: () => { descerTime(primeiroTime, 1) } }
+            ],
+            { cancelable: false }
+        );
+    }
+
+    const escolherEmpatou = () => {
+        Alert.alert(
+            "Tem certeza que a partida terminou empatada?",
+            "Se tiver mais de dois times, sairá os dois. Caso tenha menos será feito um ajuste nos times",
+            [
+                {
+                    text: "Me enganei, não empatou!",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                { text: "Empatou sim!", onPress: () => { } }
+            ],
+            { cancelable: false }
+        );
+    }
+
+    const descerTime = (time, numeroTime) => {
+        let arrayList = [...lista];
+
+        for(let index in lista){
+            if (parseInt(numeroTime) === parseInt(lista[index].numeroTime)) {
+                console.log("excluiiu", lista[index])
+                arrayList.splice(index, 1)
+            }
+        };
+        let arrayFinal = gerarArrayList(arrayList)
+        console.log(arrayList, 'arraylIST')
+        console.log(arrayFinal, 'arrayFinal')
+        for (let i in time) {
+            arrayFinal.push(time[i].nome)
+        };
+        deleteAll(arrayFinal)
+        setVisiblePartida(false)
+    }
+
     return (
         <View style={styles.container}>
             <ScrollView>
@@ -123,7 +223,12 @@ export default function ListarJogadores({ navigation }) {
                 <Proximos excluir={excluir} navigation={navigation} lista={lista} />
             </ScrollView>
             <CadastrarJogador cadastrar={cadastrar} onRequestClose={onRequestClose} visible={visible} />
-            <MenuFooter navigation={navigation} adicionarJogador={adicionarJogador} />
+            <FinalizarPartida
+                primeiroTime={escolherPrimeiroTime}
+                segundoTime={escolherSegundoTime}
+                empatou={escolherEmpatou}
+                onRequestClose={onRequestClosePartida} visible={visiblePartida} />
+            <MenuFooter finalizarPartida={finalizarPartida} navigation={navigation} adicionarJogador={adicionarJogador} />
         </View>
     );
 }
