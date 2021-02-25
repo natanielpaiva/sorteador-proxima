@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, View, Alert } from 'react-native';
 import CadastrarJogador from '../components/cadastrarJogador';
 import FinalizarPartida from '../components/finalizarPartida';
+import Load from '../components/load';
 import MenuFooter from '../components/menuFooter';
 import Proximos from '../components/proximos';
 import Times from '../components/times';
@@ -15,6 +16,7 @@ export default function ListarJogadores({ navigation }) {
     const [segundoTime, setSegundoTime] = React.useState([]);
     const [visible, setVisible] = React.useState(false);
     const [visiblePartida, setVisiblePartida] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
 
     var listaCompletaUpdate = []
 
@@ -59,9 +61,11 @@ export default function ListarJogadores({ navigation }) {
     }
 
     const initList = () => {
+        setLoading(true)
         JogadoresService.findAll().then(data => {
             onChangeLista(lista => data._array)
             listaCompletaUpdate = data._array
+            setLoading(false)
             preencherTimes()
         })
     }
@@ -82,6 +86,7 @@ export default function ListarJogadores({ navigation }) {
     }
 
     const confirmarExclusao = (jogador) => {
+        setLoading(true)
         JogadoresService.deleteById(jogador.id)
         setTimeout(() => {
             initList()
@@ -94,6 +99,7 @@ export default function ListarJogadores({ navigation }) {
     }
 
     const deleteAll = (arrayFinal) => {
+        setLoading(true)
         JogadoresService.deleteAll()
         setTimeout(() => {
             ContadorService.findQtdPorTime().then(data => {
@@ -251,6 +257,7 @@ export default function ListarJogadores({ navigation }) {
                 empatou={escolherEmpatou}
                 onRequestClose={onRequestClosePartida} visible={visiblePartida} />
             <MenuFooter finalizarPartida={finalizarPartida} navigation={navigation} adicionarJogador={adicionarJogador} />
+            <Load visible={loading} />
         </View>
     );
 }
