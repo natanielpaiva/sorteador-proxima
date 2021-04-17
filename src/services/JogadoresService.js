@@ -13,27 +13,32 @@ export default class JogadoresService {
             JogadoresService.addData(jogador, controleLaco, 'Time ' + numeroTime, numeroTime)
             if (controleLaco == qtdPorTime) {
                 qtdPorTime = parseInt(qtdPorTime) + parseInt(qtdPorTimeInicial)
-                numeroTime++
+                if (jogador !== "")
+                    numeroTime++
             }
-            controleLaco++
+            if (jogador !== "")
+                controleLaco++
         });
     }
 
     static addData(jogador, ordem, time, numeroTime) {
-        return new Promise((resolve, reject) => db.transaction(
-            tx => {
-                tx.executeSql(`insert into ${table} (nome, ordem, time, numeroTime) 
-                values (?, ?, ?, ?)`,
-                    [jogador, ordem, time, numeroTime],
-                    (_, { insertId, rows }) => {
-                        // console.log("id insert: " + insertId);
-                        resolve(insertId)
-                    }), (sqlError) => {
-                        console.log(sqlError);
-                    }
-            }, (txError) => {
-                console.log(txError);
-            }));
+        if (jogador !== "") {
+            return new Promise((resolve, reject) => db.transaction(
+                tx => {
+                    tx.executeSql(`insert into ${table} (nome, ordem, time, numeroTime) 
+                    values (?, ?, ?, ?)`,
+                        [jogador, ordem, time, numeroTime],
+                        (_, { insertId, rows }) => {
+                            // console.log("id insert: " + insertId);
+                            resolve(insertId)
+                        }), (sqlError) => {
+                            console.log(sqlError);
+                        }
+                }, (txError) => {
+                    console.log(txError);
+                }));
+        }
+
     }
 
     static deleteById(id) {

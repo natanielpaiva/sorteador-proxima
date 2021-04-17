@@ -30,6 +30,23 @@ export default function HomeScreen({ navigation }) {
         }, 1000);
     }
 
+    const ordem = () => {
+        setLoading(true)
+        new DatabaseInit()
+
+        let listaSemNumeros = value.replace(/[0-9]/g, '')
+        let listaCompleta = listaSemNumeros.split(/\n/)
+
+        setTimeout(() => {
+            ContadorService.addData(parseInt(qtdPorTime))
+            JogadoresService.addAllPlayers(listaCompleta, qtdPorTime)
+            setTimeout(() => {
+                setLoading(false)
+                navigation.navigate('Listar')
+            }, 1000);
+        }, 1000);
+    }
+
     const lista = () => {
         navigation.navigate('Listar')
     }
@@ -81,6 +98,14 @@ export default function HomeScreen({ navigation }) {
                     marginTop: 20,
                 }}
             ><Text> Sortear </Text>
+            </Button>
+            <Button
+                full warning
+                onPress={ordem}
+                style={{
+                    marginTop: 20,
+                }}
+            ><Text> Criar times na ordem </Text>
             </Button>
             <Button
                 full info
