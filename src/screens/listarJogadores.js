@@ -98,6 +98,14 @@ export default function ListarJogadores({ navigation }) {
 
     }
 
+    const pagar = (jogador, pago) =>{
+        setLoading(true)
+        JogadoresService.updatePago(jogador.id, !pago)
+        setTimeout(() => {
+            initList()
+        }, 1000);
+    }
+
     const deleteAll = (arrayFinal) => {
         setLoading(true)
         JogadoresService.deleteAll()
@@ -246,9 +254,9 @@ export default function ListarJogadores({ navigation }) {
     return (
         <View style={styles.container}>
             <ScrollView>
-                <Times excluir={excluir} navigation={navigation} lista={lista} nomeTime='Time 1' status='Jogando' />
-                <Times excluir={excluir} navigation={navigation} lista={lista} nomeTime='Time 2' status='Jogando' />
-                <Proximos excluir={excluir} navigation={navigation} lista={lista} />
+                <Times pagarJogador={pagar} excluir={excluir} navigation={navigation} lista={lista} nomeTime='Time 1' status='Jogando' />
+                <Times pagarJogador={pagar} excluir={excluir} navigation={navigation} lista={lista} nomeTime='Time 2' status='Jogando' />
+                <Proximos pagarJogador={pagar}  excluir={excluir} navigation={navigation} lista={lista} />
             </ScrollView>
             <CadastrarJogador cadastrar={cadastrar} onRequestClose={onRequestClose} visible={visible} />
             <FinalizarPartida

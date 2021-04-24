@@ -1,4 +1,4 @@
-import { Button, Icon, List, ListItem, SwipeRow, Text } from 'native-base';
+import { Button, Icon, List, ListItem, SwipeRow, Text, CheckBox } from 'native-base';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -15,12 +15,19 @@ export default function Proximos(props) {
                 >Próximos</Text>
             </ListItem>
             {props.lista.map((jogador, key) => {
+                let pago = false
+                let textPago = "Não Pago"
+                if (parseInt(jogador.pago) > 0) {
+                    pago = true
+                    textPago = "Pago"
+                }
+
                 if ('Time 1' !== jogador.time && 'Time 2' !== jogador.time) {
                     return (
                         <SwipeRow
                             key={key}
                             // leftOpenValue={75}
-                          
+
                             directionalDistanceChangeThreshold={20}
                             rightOpenValue={-75}
                             left={
@@ -30,7 +37,14 @@ export default function Proximos(props) {
                             }
                             body={
 
-                                <ListItem style={{ marginStart:20,}}>
+                                <ListItem style={{ marginStart: 20, }}>
+                                    <View>
+                                        <CheckBox checked={pago} onPress={() => props.pagarJogador(jogador, pago)} />
+                                    </View>
+                                    <Text style={{
+                                        marginStart: 20,
+                                        color: '#76787C'
+                                    }}>{textPago}</Text>
                                     <Text style={{
                                         // fontSize: 25,
                                         fontWeight: 'bold',
@@ -43,7 +57,7 @@ export default function Proximos(props) {
                                 </ListItem>
                             }
                             right={
-                                <Button danger onPress={()  => props.excluir(jogador)}>
+                                <Button danger onPress={() => props.excluir(jogador)}>
                                     <Icon active name="trash" />
                                 </Button>
                             }

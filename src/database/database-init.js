@@ -19,7 +19,8 @@ export default class DatabaseInit {
             nome text,
             ordem int,
             time text,
-            numeroTime int    
+            numeroTime int,
+            pago boolean    
             );
             `,
             `DROP TABLE IF EXISTS contador;`,

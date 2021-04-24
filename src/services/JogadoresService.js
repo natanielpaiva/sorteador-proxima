@@ -22,12 +22,13 @@ export default class JogadoresService {
     }
 
     static addData(jogador, ordem, time, numeroTime) {
+        let pago = false;
         if (jogador !== "") {
             return new Promise((resolve, reject) => db.transaction(
                 tx => {
-                    tx.executeSql(`insert into ${table} (nome, ordem, time, numeroTime) 
-                    values (?, ?, ?, ?)`,
-                        [jogador, ordem, time, numeroTime],
+                    tx.executeSql(`insert into ${table} (nome, ordem, time, numeroTime, pago) 
+                    values (?, ?, ?, ?, ?)`,
+                        [jogador, ordem, time, numeroTime, pago],
                         (_, { insertId, rows }) => {
                             // console.log("id insert: " + insertId);
                             resolve(insertId)
@@ -51,6 +52,18 @@ export default class JogadoresService {
             }, (txError) => {
                 console.log(txError);
 
+            });
+    }
+
+    static updatePago(id, pago) { 
+        db.transaction(
+            tx => {
+                tx.executeSql(`update ${table} set pago=? where id = ?;`, [pago, id], (_, { rows }) => {
+                }), (sqlError) => {
+                    console.log(sqlError);
+                }
+            }, (txError) => {
+                console.log(txError);
             });
     }
 

@@ -1,4 +1,4 @@
-import { List, ListItem, Text, SwipeRow, Button, Icon, View } from 'native-base';
+import { List, ListItem, Text, SwipeRow, Button, Icon, View, CheckBox } from 'native-base';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
@@ -10,16 +10,20 @@ export default function Times(props) {
             <ListItem itemDivider>
                 <Text
                     style={{
-                        // fontSize: 27,
                         color: 'gray',
                         fontWeight: 'bold',
-                        // color: '#fff',
-                        // alignSelf:'center'
                     }}
                 >{props.nomeTime}  {props.status}</Text>
             </ListItem>
 
             {props.lista.map((jogador, key) => {
+                let pago = false
+                let textPago = "Não Pago"
+                if(parseInt(jogador.pago) > 0){
+                    pago = true
+                    textPago = "Pago"
+                }
+
                 if (props.nomeTime === jogador.time) {
                     return (
                         <SwipeRow
@@ -32,12 +36,22 @@ export default function Times(props) {
                                 </Button>
                             }
                             body={
-                                <View>
-                                    <Text style={{
-                                        marginStart:20,
-                                        // fontSize: 25,
-                                        color: '#76787C'
-                                    }}>{jogador.nome}</Text>
+                                <View style={{flexDirection:"row"}}>
+                                    <View>
+                                        <CheckBox checked={pago} onPress={() => props.pagarJogador(jogador, pago)} />
+                                    </View>
+                                    <View>
+                                        <Text style={{
+                                            marginStart: 20,
+                                            color: '#76787C'
+                                        }}>{textPago}</Text>
+                                    </View>
+                                    <View>
+                                        <Text style={{
+                                            marginStart: 20,
+                                            color: '#76787C'
+                                        }}>{jogador.nome}</Text>
+                                    </View>
                                 </View>
                             }
                             right={
